@@ -1,0 +1,103 @@
+import { useEffect, useRef } from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
+// removed Box; bubbles render without it
+import type { ChatMessage } from '../store/chatStore';
+import type { OrderCard as OrderCardType } from '../store/chatStore';
+import { OrderCard } from './OrderCard';
+import CatalogGrid from './CatalogGrid';
+import { useChatStore } from '../store/chatStore';
+
+type Props = {
+  messages: ChatMessage[];
+};
+
+export function MessageList({ messages }: Props) {
+  const parentRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
+  const scrollToOrderId = useChatStore((s) => s.scrollToOrderId);
+  const setScrollToOrder = useChatStore((s) => s.setScrollToOrder);
+
+  const rowVirtualizer = useVirtualizer({
+    count: messages.length,
+    getScrollElement: () => parentRef.current,
+    // Use a larger baseline to reduce layout thrash when cards/images render
+    estimateSize: () => 100,
+    overscan: 8,
+  });
+
+  const items = rowVirtualizer.getVirtualItems();
+
+  // Auto-scroll to bottom on new messages
+  useEffect(() => {
+    // scroll to the last item
+    rowVirtualizer.scrollToIndex(messages.length - 1, { align: 'end' });
+    // ensure container is scrolled fully if content shrank/grew
+    const el = parentRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [messages.length, rowVirtualizer]);
+
+  // Keep the inner container's height in sync without JSX inline styles
+  useEffect(() => {
+    const el = innerRef.current;
+    if (el) el.style.height = `${rowVirtualizer.getTotalSize()}px`;
+  }, [rowVirtualizer, messages.length]);
+
+  // Handle programmatic scroll to a specific orderId using the virtualizer
+  useEffect(() => {
+    if (!scrollToOrderId) return;
+    const idx = messages.findIndex((m) => m.card?.type === 'order' && (m.card as OrderCardType).orderId === scrollToOrderId);
+    if (idx >= 0) {
+      rowVirtualizer.scrollToIndex(idx, { align: 'center' });
+    }
+    // clear the target either way to avoid loops
+    setScrollToOrder(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scrollToOrderId]);
+
+  return (
+    <div ref={parentRef} className="chat-list" aria-live="polite" role="log" aria-relevant="additions text">
+      <div ref={innerRef} className="virtualizer-inner">
+        {items.map((virtualRow) => {
+          const m = messages[virtualRow.index];
+          return (
+            <div
+              key={virtualRow.key}
+              ref={(el) => {
+                if (!el) return;
+                rowVirtualizer.measureElement(el);
+                el.style.transform = `translateY(${virtualRow.start}px)`;
+              }}
+              data-index={virtualRow.index}
+              className="virtualizer-item"
+              id={m.card && m.card.type === 'order' ? `order-${(m.card as OrderCardType).orderId}` : undefined}
+            >
+              {m.card ? (
+                <div>
+                  <div className={`bubble-row assistant`}>
+                    <div className="bubble-avatar" aria-hidden />
+                    <div className="bubble assistant" role="article">
+                      {m.card.type === 'order' ? (
+                        <OrderCard card={m.card} />
+                      ) : m.card.type === 'catalog' ? (
+                        <CatalogGrid card={m.card} />
+                      ) : null}
+                      <div className="bubble-meta">Agent · {m.createdAt ? new Date(m.createdAt).toLocaleTimeString() : ''}</div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className={`bubble-row ${m.role}`}>
+                  {m.role === 'assistant' && <div className="bubble-avatar" aria-hidden />}
+                  <div className={`bubble ${m.role}`}>
+                    <div>{m.content || (m.role === 'assistant' ? (<span className="typing-dots" aria-label="typing"><span /> <span /> <span /></span>) : null)}</div>
+                    <div className="bubble-meta">{m.role === 'user' ? 'You' : 'Agent'} · {m.createdAt ? new Date(m.createdAt).toLocaleTimeString() : ''}</div>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,26 @@
+sequenceDiagram
+  participant U as User
+  participant UI as AgentChat
+  participant C as sse.ts
+  participant S as Express /api/chat
+  U->>UI: "find airpods"
+  UI->>C: start stream(prompt, clientId)
+  C->>S: POST /api/chat (SSE)
+  S-->>C: data: Searching catalog for ... (token chunks)
+  S-->>C: event: catalog { items: [...] }
+  C->>UI: catalog event
+  UI->>UI: add assistant message + CatalogGrid card
+  U->>UI: click Buy on an item (or "buy A100 x2")
+  UI->>S: POST /api/orders { itemId, quantity }
+  S-->>UI: 200 { orderId, item, quantity, total }
+  UI->>UI: remove listing card
+  UI->>UI: add order card message
+  UI-->>AS: orders updated
+  U->>UI: yes (confirm)
+  UI->>C: stream("yes")
+  C->>S: POST /api/chat (SSE)
+  S-->>C: data: Order placed ... (token chunks)
+  S-->>C: event: order { orderId, item, quantity, total }
+  C->>UI: order event
+  UI->>UI: add order card message
+  UI->>UI: scroll to order

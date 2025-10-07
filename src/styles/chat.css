@@ -1,0 +1,193 @@
+.chat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  /* Keep messages compact so the input is visible without scrolling */
+  height: clamp(240px, 45svh, 60svh);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 6px;
+  border: 1px solid var(--color-border-input-default, #e9ebed);
+  border-radius: 8px;
+  background: var(--color-background-container-content, #fff);
+}
+
+.chat-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.chat-actions-right {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.virtualizer-inner {
+  position: relative;
+  width: 100%;
+}
+
+.virtualizer-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 4px 0;
+}
+
+/* Chat bubbles */
+.bubble-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+.bubble-row.user { justify-content: flex-end; }
+.bubble-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-background-toggle-default, #e9ebed);
+  flex: 0 0 28px;
+}
+.bubble {
+  max-width: min(680px, 85%);
+  padding: 8px 10px;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  transition: box-shadow 120ms ease, transform 120ms ease;
+}
+.bubble.user {
+  background: var(--color-background-button-primary-default, #0073bb);
+  color: var(--color-text-notification-inverted, #fff);
+  border-bottom-right-radius: 4px;
+}
+.bubble.assistant {
+  background: var(--color-background-container-content, #fff);
+  color: var(--color-text-body-default, #000);
+  border-bottom-left-radius: 4px;
+  border: 1px solid var(--color-border-input-default, #e9ebed);
+}
+.bubble:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.bubble:focus-visible { outline: 3px solid var(--color-border-item-focused, #0972d3); }
+.bubble-meta {
+  font-size: 11px;
+  color: var(--color-text-body-secondary);
+  margin-top: 2px;
+}
+
+/* Typing indicator */
+.typing-dots { display: inline-flex; gap: 3px; }
+.typing-dots span {
+  width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.4;
+  animation: blink 1s infinite ease-in-out;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes blink { 0%, 100% { opacity: 0.2 } 50% { opacity: 0.8 } }
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.chat-input-sticky {
+  position: sticky;
+  bottom: 0;
+  background: var(--color-background-container-content, #fff);
+  padding-top: 8px;
+}
+
+/* Generic centered container with min 50vh */
+.center-50vh {
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Footer tools toggle row aligned to the right */
+.footer-tools-toggle {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.center-fullvh {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Catalog grid header area */
+.catalog-header {
+  min-height: 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  line-height: 1.3;
+  min-height: 2.6em;
+}
+
+.catalog-subid {
+  color: var(--color-text-body-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.catalog-media-img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 6px;
+  background: #f2f3f3;
+  transition: transform 120ms ease;
+}
+.catalog-media-img:hover { transform: translateY(-1px); }
+
+/* Focus ring helpers */
+.focus-ring:focus-visible { outline: 3px solid var(--color-border-item-focused, #0972d3); outline-offset: 2px; }
+
+.subtotal-text {
+  font-size: 12px;
+}
+
+.price-min {
+  min-height: 56px;
+}
+
+.price-min-ro {
+  min-height: 28px;
+}
+
+.actions-min {
+  min-height: 88px;
+}
+
+.top-results-title {
+  margin: 0;
+}
+
+.order-media-img {
+  width: 240px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+}

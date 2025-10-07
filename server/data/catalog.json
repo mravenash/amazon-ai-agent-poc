@@ -1,0 +1,37 @@
+[
+  {
+    "id": "A100",
+    "title": "Apple AirPods Pro (2nd Gen)",
+    "price": 249.0,
+    "image": "https://upload.wikimedia.org/wikipedia/commons/2/2f/AirPods_Pro_%282nd_generation%29.jpg",
+    "keywords": ["earbuds", "in-ear", "earphones", "airpods", "apple", "noise cancelling", "anc"]
+  },
+  {
+    "id": "A101",
+    "title": "Apple AirPods (3rd Gen)",
+    "price": 169.0,
+    "image": "https://upload.wikimedia.org/wikipedia/commons/0/0c/AirPods_3.jpg",
+    "keywords": ["earbuds", "in-ear", "earphones", "airpods", "apple"]
+  },
+  {
+    "id": "S200",
+    "title": "Samsung Galaxy Buds2 Pro",
+    "price": 229.99,
+    "image": "https://upload.wikimedia.org/wikipedia/commons/b/b7/Pair_of_lavender_Samsung_Galaxy_Buds2_Pro.jpg",
+    "keywords": ["earbuds", "in-ear", "earphones", "buds", "galaxy", "samsung", "noise cancelling", "anc"]
+  },
+  {
+    "id": "B300",
+    "title": "Beats Studio Buds+",
+    "price": 169.95,
+    "image": "https://upload.wikimedia.org/wikipedia/commons/b/b1/Beats_Studio_Buds_Plus_-_3.jpg",
+    "keywords": ["earbuds", "in-ear", "earphones", "beats", "noise cancelling", "anc"]
+  },
+  {
+    "id": "S201",
+    "title": "Sony WF-1000XM5",
+    "price": 298.0,
+    "image": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Sony_WF-1000XM4.jpg",
+    "keywords": ["earbuds", "in-ear", "earphones", "sony", "wf-1000xm5", "xm5", "noise cancelling", "anc"]
+  }
+]
