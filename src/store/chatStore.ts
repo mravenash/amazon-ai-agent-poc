@@ -77,6 +77,12 @@ export type ChatState = {
 };
 
 function uuid() {
+  try {
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+      return crypto.randomUUID();
+    }
+  } catch { /* ignore */ }
+  // Fallback
   return Math.random().toString(36).slice(2) + Date.now().toString(36);
 }
 

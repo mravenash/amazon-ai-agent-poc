@@ -1,3 +1,4 @@
+import { debug } from './log';
 import type { CatalogItem } from '../store/chatStore';
 
 export type OrderEventData = {
@@ -54,8 +55,8 @@ export async function* sseChatStream(prompt: string, signal?: AbortSignal, clien
             } else if (ev === 'catalog') {
               yield { type: 'catalog', data: parsed as CatalogEventData };
             }
-          } catch {
-            /* no-op */
+          } catch (e) {
+            debug('sse parse error', e);
           }
         }
       } else if (chunk.startsWith('data: ')) {

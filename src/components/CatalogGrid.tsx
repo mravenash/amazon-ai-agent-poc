@@ -1,3 +1,4 @@
+import { debug } from '../lib/log';
 import { Box, Button, Cards, SpaceBetween, TextContent, Select } from '@cloudscape-design/components';
 import { useState } from 'react';
 import type { CatalogCard, CatalogItem, OrderCard } from '../store/chatStore';
@@ -40,10 +41,10 @@ export function CatalogGrid({ card, readOnly }: Props) {
       try {
         requestAnimationFrame(() => {
           const container = document.querySelector('.chat-list') as HTMLElement | null;
-          if (container) container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+          if (container) container.scrollTop = container.scrollHeight;
         });
-      } catch { /* no-op */ }
-      try { window.dispatchEvent(new CustomEvent('orders:updated')); } catch { /* no-op */ }
+      } catch (e) { debug('catalog buy scrollToBottom failed', e); }
+      try { window.dispatchEvent(new CustomEvent('orders:updated')); } catch (e) { debug('dispatch orders:updated failed', e); }
     } catch {
       store.addMessage({ role: 'assistant', content: 'Sorry, I could not place the order right now.' });
     } finally {

@@ -3,6 +3,7 @@ import { Button, SpaceBetween, Textarea, Select, Box, Input, Flashbar, Spinner }
 import { useChatStore } from '../store/chatStore';
 import { MessageList } from './MessageList';
 import { sseChatStreamWithRetry } from '../lib/sse';
+import { debug } from '../lib/log';
 
 export function AgentChat() {
   const store = useChatStore();
@@ -33,16 +34,16 @@ export function AgentChat() {
         const q = Math.max(1, parseInt(n, 10) || 1);
         useChatStore.getState().setItemQty(pid, q);
       }
-  } catch { /* no-op */ }
+  } catch (e) { debug('qty-parse failed', e); }
 
     // helper: scroll chat container to bottom
     const scrollToBottom = () => {
-  try {
+      try {
         requestAnimationFrame(() => {
           const container = document.querySelector('.chat-list') as HTMLElement | null;
-          if (container) container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+          if (container) container.scrollTop = container.scrollHeight;
         });
-  } catch { /* no-op */ }
+  } catch (e) { debug('scrollToBottom failed', e); }
     };
 
     // Use SSE backend
@@ -80,7 +81,7 @@ export function AgentChat() {
               const q = Math.max(1, parseInt(m[1], 10) || 1);
               items.forEach((it) => useChatStore.getState().setItemQty(it.id, q));
             }
-          } catch { /* no-op */ }
+          } catch (e) { debug('sync qty from lastPrompt failed', e); }
           if (items.length === 1) {
             store.setPendingItem(items[0].id);
           }
@@ -94,7 +95,7 @@ export function AgentChat() {
           addTokensToLastAssistant(`\n\nOrder confirmed: ${item.title} x${quantity}. Total $${total}. (ID: ${orderId})\n`);
           // Also push a structured card message for nicer UI
           addMessage({ role: 'assistant', content: '', card: { type: 'order', orderId, item, quantity, total } });
-          try { window.dispatchEvent(new CustomEvent('orders:updated')); } catch { /* no-op */ }
+          try { window.dispatchEvent(new CustomEvent('orders:updated')); } catch (e) { debug('dispatch orders:updated failed', e); }
           scrollToBottom();
         }
       }
@@ -107,7 +108,7 @@ export function AgentChat() {
         if (last && !last.content) {
           useChatStore.getState().addTokensToLastAssistant(msg);
         }
-      } catch { /* no-op */ }
+  } catch (e) { debug('final scrollToBottom failed', e); }
     } finally {
       setStreaming(false);
       store.endStreamStats();
@@ -120,7 +121,7 @@ export function AgentChat() {
         if (lastAssistant && !lastAssistant.content?.trim()) {
           useChatStore.getState().addTokensToLastAssistant('No response received. Please try again.');
         }
-      } catch { /* no-op */ }
+  } catch (e) { debug('ensure last assistant content fallback failed', e); }
     }
   };
 
